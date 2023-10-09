@@ -1,5 +1,3 @@
-import dotenv from 'dotenv'
-dotenv.config();
 const express = require('express');
 const path = require('path');
 const port = 8000;
