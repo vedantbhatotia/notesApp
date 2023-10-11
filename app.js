@@ -32,7 +32,7 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-
+app.use(passport.setAuthenticatedUser);
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
