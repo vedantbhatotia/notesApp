@@ -48,4 +48,42 @@ router.get('/dashboard', passport.checkAuthentication, async function(req, res, 
     }
 });
 
+router.get('/dashboard/item/:id',passport.checkAuthentication,async function(req,res){
+    const note = await Notes.findById(req.params.id);4
+    if(note){
+        return res.render('view_notes',{
+            title:'Your Notes',
+            noteID:req.params.id,
+            note,
+            layout:'../views/dashboard',
+        })
+    }else{
+        res.send("error")
+    }
+})
+router.post('/dashboard/item/update/:id', passport.checkAuthentication, async function (req, res) {
+    try {
+      const updatedNote = await Notes.findOneAndUpdate(
+        { _id: req.params.id },
+        {
+          title: req.body.title,
+          body: req.body.body
+        },
+        { new: true } // Set { new: true } to return the updated document
+      );
+  
+      if (updatedNote) {
+        return res.redirect('back');
+      } else {
+        return res.send('Note not found.');
+      }
+    } catch (error) {
+      console.error('Error updating note:', error);
+      return res.status(500).send('An error occurred while updating the note.');
+    }
+  });
+  
+
+
+
 module.exports = router;
