@@ -17,7 +17,7 @@ app.use(session({
      saveUninitialized:false,
      resave:false,
      cookie:{
-        maxAge:(1000*60*10)
+        maxAge:(1000*60*100)
      },
      store: new MongoStore({
         mongoUrl:'mongodb://0.0.0.0/notes-app'
@@ -56,3 +56,8 @@ app.listen(port,function(err){
         console.log("Server is up and running on port",port);
         }
 });
+
+
+
+
+// <!-- /dashboard/item/update/<%- noteID %>" -->

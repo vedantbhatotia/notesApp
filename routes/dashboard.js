@@ -82,8 +82,38 @@ router.post('/dashboard/item/update/:id', passport.checkAuthentication, async fu
       return res.status(500).send('An error occurred while updating the note.');
     }
   });
+
+  router.post('/dashboard/item-delete/:id', passport.checkAuthentication, async function(req, res) {
+    try {
+      let id = req.params.id;
+      let note = await Notes.findByIdAndDelete({ _id: id }); // Corrected: pass an object with _id property
+      return res.redirect('/dashboard');
+    } catch (err) {
+      console.log("error", err);
+    }
+  });
+  router.get('/dashboard/add',passport.checkAuthentication,function(req,res){
+    return res.render('add_notes',{
+        title:'Your Notes',
+        layout:'../views/dashboard',
+    })
+  })
+  router.post('/dashboard/item/create',passport.checkAuthentication, async (req, res) => {
+    const { title, body } = req.body;
   
-
-
+    try {
+      const newNote = new Notes({
+        title,
+        body,
+        user: req.user._id
+      });
+      console.log(newNote);
+      await newNote.save();
+      return res.redirect('/dashboard');
+    } catch (error) {
+      console.error('Error creating note:', error);
+      return res.status(500).json({ error: 'An error occurred while creating the note' });
+    }
+  });
 
 module.exports = router;
