@@ -94,7 +94,7 @@ router.post('/dashboard/item/update/:id', passport.checkAuthentication, async fu
   });
   router.get('/dashboard/add',passport.checkAuthentication,function(req,res){
     return res.render('add_notes',{
-        title:'Your Notes',
+        title:'Add Notes',
         layout:'../views/dashboard',
     })
   })
@@ -115,5 +115,25 @@ router.post('/dashboard/item/update/:id', passport.checkAuthentication, async fu
       return res.status(500).json({ error: 'An error occurred while creating the note' });
     }
   });
-
+  router.post('/dashboard/search',passport.checkAuthentication,async function(req,res){
+    try {
+        let searchTerm = req.body.searchTerm;
+        const searchNoSpecialChars = searchTerm.replace(/[^a-zA-Z0-9 ]/g, "");
+    
+        const searchResults = await Notes.find({
+          $or: [
+            { title: { $regex: new RegExp(searchNoSpecialChars, "i") } },
+            { body: { $regex: new RegExp(searchNoSpecialChars, "i") } },
+          ],
+        })
+    
+        res.render("search_notes", {
+        title:"Search",
+          searchResults,
+          layout: "../views/dashboard",
+        });
+      } catch (error) {
+        console.log(error);
+      }
+  })
 module.exports = router;
