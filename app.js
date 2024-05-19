@@ -1,14 +1,18 @@
 const express = require('express');
 const path = require('path');
 const port = 8000;
+const dotenv = require('dotenv');
 const expressLayouts = require('express-ejs-layouts');
-const db = require('./config/mongoosse');
+const connectDB = require('./config/mongoosse');
 const passportMware = require('./config/passport-setup');
 const MongoStore = require('connect-mongo');
 const passport = require('passport');
 const session = require('express-session'); 
 const bodyParser = require('body-parser');
 const app = express();
+dotenv.config();
+const uri = process.env.MONGO_URL;
+connectDB();
 app.use(session({
     // key to encrypt the cookie
     // req.session stores information about that session
@@ -20,7 +24,7 @@ app.use(session({
         maxAge:(1000*60*100)
      },
      store: new MongoStore({
-        mongoUrl:'mongodb://0.0.0.0/notes-app'
+        mongoUrl:uri
     }, function(err){
         if (err) {
             console.error("Error setting up MongoStore:", err);
