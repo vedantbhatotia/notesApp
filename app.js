@@ -12,7 +12,6 @@ const bodyParser = require('body-parser');
 const app = express();
 dotenv.config();
 const uri = process.env.MONGO_URL;
-connectDB();
 app.use(session({
     // key to encrypt the cookie
     // req.session stores information about that session
@@ -23,7 +22,7 @@ app.use(session({
      cookie:{
         maxAge:(1000*60*100)
      },
-     store: new MongoStore({
+     store:MongoStore.create({
         mongoUrl:uri
     }, function(err){
         if (err) {
@@ -38,6 +37,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(passport.setAuthenticatedUser);
 app.use(bodyParser.urlencoded({extended: false}));
+connectDB();
 app.use(bodyParser.json());
 
 app.use(expressLayouts);
